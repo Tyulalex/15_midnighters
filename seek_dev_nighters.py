@@ -13,7 +13,7 @@ def load_config():
 
 
 def send_ok_request(url, attempts=3):
-    sleep_time_between_attempts_sec = 30
+    sleep_time_between_attempts_sec = 2
     response = requests.get(url, verify=False)
     if not response.ok and attempts > 0:
         time.sleep(sleep_time_between_attempts_sec)
