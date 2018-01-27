@@ -16,6 +16,10 @@ to run it:
 on windows:
 ```
   python seek_dev_nighters.py
+  
+  
+  Users that made commits in time range between 00:00:00 07:00:00 are:
+    user_1, user_2
 ```
 on linux might require 
 ```

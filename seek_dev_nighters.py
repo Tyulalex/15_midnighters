@@ -12,7 +12,7 @@ def load_attempts():
         records = response["records"]
         for record in records:
             yield record
-        page += page
+        page += 1
         if page > max_page:
             break
 
@@ -33,5 +33,7 @@ if __name__ == '__main__':
     for record in records:
         if is_user_a_midnighter(record, [midnight_dt, morning_dt]):
             midnighters.add(record["username"])
-    print("Users that made commits in time range between {} {} are:\n{}".format(
-        midnight_dt, morning_dt, "\n".join(midnighters)))
+    print("Users that made commits in time range "
+          "between {} and {} are:\n{}".format(midnight_dt,
+                                              morning_dt,
+                                              "\n".join(midnighters)))
