@@ -16,10 +16,10 @@ def load_attempts():
             break
 
 
-def is_user_a_midnighter(record, hour_range):
+def is_user_a_midnighter(record, midnight_hour, morning_hour):
     timezone = pytz.timezone(record["timezone"])
     locale_datetime = datetime.fromtimestamp(record["timestamp"], timezone)
-    if hour_range[0] <= locale_datetime.hour <= hour_range[1]:
+    if midnight_hour <= locale_datetime.hour <= morning_hour:
         return True
 
 
@@ -29,7 +29,7 @@ if __name__ == '__main__':
     records = load_attempts()
     midnighters = set()
     for record in records:
-        if is_user_a_midnighter(record, [midnight_hour, morning_hour]):
+        if is_user_a_midnighter(record, midnight_hour, morning_hour):
             midnighters.add(record["username"])
     print(
         "Users that made commits in time range between {} AM and {} AM are:\n"
