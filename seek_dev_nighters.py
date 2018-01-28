@@ -1,39 +1,37 @@
 import requests
 import pytz
-import datetime
+from datetime import datetime
 
 
 def load_attempts():
     source_url = "https://devman.org/api/challenges/solution_attempts/"
     page = 1
     while True:
-        response = requests.get(source_url, data={"page": page}).json()
-        max_page = response["number_of_pages"]
-        records = response["records"]
+        page_data = requests.get(source_url, params={"page": page}).json()
+        records = page_data["records"]
         for record in records:
             yield record
         page += 1
-        if page > max_page:
+        if page > page_data["number_of_pages"]:
             break
 
 
-def is_user_a_midnighter(record, date_range):
-    local_timezone = pytz.timezone(record["timezone"])
-    utc_dt = pytz.utc.localize(
-        datetime.datetime.utcfromtimestamp(record["timestamp"]))
-    local_dt = utc_dt.astimezone(local_timezone)
-    if date_range[0] <= local_dt.time() <= date_range[1]:
+def is_user_a_midnighter(record, hour_range):
+    timezone = pytz.timezone(record["timezone"])
+    locale_datetime = datetime.fromtimestamp(record["timestamp"], timezone)
+    if hour_range[0] <= locale_datetime.hour <= hour_range[1]:
         return True
 
+
 if __name__ == '__main__':
-    midnight_dt = datetime.time(0, 0, 0)
-    morning_dt = datetime.time(7, 0, 0)
+    midnight_hour = 0
+    morning_hour = 7
     records = load_attempts()
     midnighters = set()
     for record in records:
-        if is_user_a_midnighter(record, [midnight_dt, morning_dt]):
+        if is_user_a_midnighter(record, [midnight_hour, morning_hour]):
             midnighters.add(record["username"])
-    print("Users that made commits in time range "
-          "between {} and {} are:\n{}".format(midnight_dt,
-                                              morning_dt,
-                                              "\n".join(midnighters)))
+    print(
+        "Users that made commits in time range between {} AM and {} AM are:\n"
+        "{}".format(midnight_hour, morning_hour, "\n".join(midnighters))
+    )
